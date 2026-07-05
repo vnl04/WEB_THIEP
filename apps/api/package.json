@@ -19,7 +19,6 @@
     "@nestjs/passport": "^10.0.0",
     "@nestjs/config": "^3.0.0",
     "@nestjs/swagger": "^7.0.0",
-    "@nestjs/caching": "^0.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
