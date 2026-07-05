@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuthStore } from '@/lib/store';
+import { apiClient } from '@/lib/api';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { setUser, setToken } = useAuthStore();
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,22 +23,21 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      const response = await apiClient.register(formData.email, formData.password, formData.name);
+      const { token, user } = response.data.data;
 
-      const data = await res.json();
+      // Save to localStorage
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('auth_user', JSON.stringify(user));
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
+      // Update Zustand store
+      setToken(token);
+      setUser(user);
+      apiClient.setAuthHeader(token);
 
-      localStorage.setItem('token', data.token);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.response?.data?.error?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

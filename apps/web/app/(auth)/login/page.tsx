@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuthStore } from '@/lib/store';
+import { apiClient } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser, setToken } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,22 +20,21 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await apiClient.login(email, password);
+      const { token, user } = response.data.data;
 
-      const data = await res.json();
+      // Save to localStorage
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('auth_user', JSON.stringify(user));
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
+      // Update Zustand store
+      setToken(token);
+      setUser(user);
+      apiClient.setAuthHeader(token);
 
-      localStorage.setItem('token', data.token);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.response?.data?.error?.message || 'Login failed');
     } finally {
       setLoading(false);
     }

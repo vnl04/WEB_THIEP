@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { apiClient } from '@/lib/api';
 
 export default function CardViewerPage() {
   const params = useParams();
@@ -9,15 +10,19 @@ export default function CardViewerPage() {
   const [loading, setLoading] = useState(true);
   const [rsvpStatus, setRsvpStatus] = useState('');
   const [wish, setWish] = useState('');
+  const [wishes, setWishes] = useState<any[]>([]);
+  const [guestToken, setGuestToken] = useState('');
 
   useEffect(() => {
     const fetchCard = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/cards/slug/${params.slug}`,
-        );
-        const data = await res.json();
-        setCard(data);
+        const slug = params.slug as string;
+        const response = await apiClient.getCardBySlug(slug);
+        setCard(response.data.data);
+
+        // Fetch wishes for this card
+        const wishesResponse = await apiClient.getWishes(response.data.data.id, { status: 'approved' });
+        setWishes(wishesResponse.data.data || []);
       } catch (error) {
         console.error('Failed to fetch card:', error);
       } finally {
@@ -32,31 +37,33 @@ export default function CardViewerPage() {
 
   const handleRsvp = async (status: string) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/guests/rsvp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status,
-          cardId: card.id,
-        }),
-      });
+      // In production, we'd get the actual guest token from URL params
+      const response = await apiClient.submitRsvp(guestToken || 'demo-token', { status });
       setRsvpStatus(status);
+      alert('RSVP submitted successfully!');
     } catch (error) {
       console.error('RSVP failed:', error);
+      alert('Failed to submit RSVP');
     }
   };
 
   const handleWish = async () => {
+    if (!wish.trim()) {
+      alert('Please write a message');
+      return;
+    }
+
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/cards/${card.id}/wishes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: wish }),
-      });
+      await apiClient.submitWish(card.id, { content: wish, guestName: 'Anonymous' });
       setWish('');
       alert('Thank you for your wishes!');
+      
+      // Refresh wishes
+      const wishesResponse = await apiClient.getWishes(card.id, { status: 'approved' });
+      setWishes(wishesResponse.data.data || []);
     } catch (error) {
       console.error('Wish submission failed:', error);
+      alert('Failed to submit wish');
     }
   };
 
@@ -139,8 +146,16 @@ export default function CardViewerPage() {
         </div>
 
         <div className="space-y-4">
-          {/* Wishes list would go here */}
-          <p className="text-gray-500 text-center">No wishes yet. Be the first to share!</p>
+          {wishes.length > 0 ? (
+            wishes.map((w: any) => (
+              <div key={w.id} className="card bg-purple-50 p-6 rounded-lg border border-purple-200">
+                <p className="font-semibold text-gray-800">{w.guestName || 'Anonymous'}</p>
+                <p className="text-gray-600 mt-2">{w.content}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No wishes yet. Be the first to share!</p>
+          )}
         </div>
       </section>
 
