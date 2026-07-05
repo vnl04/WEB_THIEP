@@ -39,9 +39,8 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 bg-light">
-      <div className="w-full max-w-md">
-        <div className="card p-8">
+    <div className="w-full max-w-md">
+      <div className="card p-8 bg-white">
           <h1 className="text-3xl font-bold mb-8 text-center">Welcome Back</h1>
 
           {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">{error}</div>}
@@ -79,13 +78,12 @@ export default function LoginPage() {
           </form>
 
           <p className="text-center mt-6 text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className="text-primary font-bold">
               Sign up
             </Link>
           </p>
-        </div>
       </div>
-    </main>
+    </div>
   );
 }

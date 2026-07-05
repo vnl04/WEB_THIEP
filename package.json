@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "description": "Wedding card platform with editor, RSVP, and gift management",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "packageManager": "pnpm@10.34.3",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",

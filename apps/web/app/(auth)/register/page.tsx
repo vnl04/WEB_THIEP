@@ -42,10 +42,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 bg-light">
-      <div className="w-full max-w-md">
-        <div className="card p-8">
-          <h1 className="text-3xl font-bold mb-8 text-center">Create Account</h1>
+    <div className="w-full max-w-md">
+      <div className="card p-8 bg-white">
+        <h1 className="text-3xl font-bold mb-8 text-center">Create Account</h1>
 
           {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">{error}</div>}
 
@@ -96,14 +95,13 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="text-center mt-6 text-gray-600">
-            Already have an account?{' '}
-            <Link href="/login" className="text-primary font-bold">
-              Login
-            </Link>
-          </p>
-        </div>
+        <p className="text-center mt-6 text-gray-600">
+          Already have an account?{' '}
+          <Link href="/login" className="text-primary font-bold">
+            Sign in
+          </Link>
+        </p>
       </div>
-    </main>
+    </div>
   );
 }
