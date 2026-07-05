@@ -203,6 +203,40 @@ class ApiClient {
   deleteMedia(cardId: string, mediaId: string) {
     return this.client.delete(`/cards/${cardId}/media/${mediaId}`);
   }
+
+  // Payment endpoints
+  createPayment(data: any) {
+    return this.client.post('/payments/create', data);
+  }
+
+  getPaymentStatus(transactionId: string) {
+    return this.client.get(`/payments/${transactionId}/status`);
+  }
+
+  getPayments(query?: any) {
+    return this.client.get('/payments', { params: query });
+  }
+
+  // Subscription endpoints
+  getPlan(planId: string) {
+    return this.client.get(`/subscriptions/plans/${planId}`);
+  }
+
+  getPlans() {
+    return this.client.get('/subscriptions/plans');
+  }
+
+  createSubscription(cardId: string, planId: string) {
+    return this.client.post('/subscriptions', { cardId, planId });
+  }
+
+  updateSubscription(id: string, data: any) {
+    return this.client.patch(`/subscriptions/${id}`, data);
+  }
+
+  cancelSubscription(id: string) {
+    return this.client.delete(`/subscriptions/${id}`);
+  }
 }
 
 export const apiClient = new ApiClient();
