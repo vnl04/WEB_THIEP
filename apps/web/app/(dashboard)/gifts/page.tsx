@@ -1,33 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function GiftsPage() {
-  const [totalGifts, setTotalGifts] = useState(0);
-  const [gifts, setGifts] = useState([]);
-
-  useEffect(() => {
-    // Fetch gifts from API
-    const fetchGifts = async () => {
-      try {
-        // Replace with actual card ID
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/cards/1/gifts`);
-        const data = await res.json();
-        setGifts(data || []);
-        setTotalGifts(data.length * 50000); // Mock total
-      } catch (error) {
-        console.error('Failed to fetch gifts:', error);
-      }
-    };
-
-    fetchGifts();
-  }, []);
+  const [gifts] = useState([
+    { id: 1, donor: 'Guest 1', amount: 500000, status: 'confirmed', date: '2025-01-15' },
+  ]);
 
   return (
-    <main className="min-h-screen bg-light py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Gifts Received</h1>
+    <div className="p-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-serif font-bold mb-2">Gifts & Contributions</h1>
           <p className="text-gray-600">Track all gifts and donations</p>
         </div>
 

@@ -6,23 +6,22 @@ export default function WishesPage() {
   const [wishes, setWishes] = useState([]);
 
   return (
-    <main className="min-h-screen bg-light py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Wishes</h1>
-          <p className="text-gray-600 mb-8">
-            View and manage wishes from your guests
-          </p>
-        </div>
+    <div className="p-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-serif font-bold mb-2">Wishes & Messages</h1>
+        <p className="text-gray-600">View wishes from your guests</p>
+      </div>
 
-        <div className="space-y-4">
-          {wishes.length === 0 ? (
-            <div className="card p-8 text-center text-gray-500">
-              <p>No wishes yet. Share your card to receive wishes!</p>
-            </div>
-          ) : (
-            wishes.map((wish: any) => (
-              <div key={wish.id} className="card p-6">
+      <div className="space-y-4">
+        {wishes.length === 0 ? (
+          <div className="card bg-white p-8 text-center">
+            <div className="text-4xl mb-3">💌</div>
+            <p className="text-gray-500 text-lg">No wishes yet</p>
+            <p className="text-gray-400 text-sm mt-1">Share your card to receive wishes from guests!</p>
+          </div>
+        ) : (
+          wishes.map((wish: any) => (
+            <div key={wish.id} className="card bg-white p-6">
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <p className="font-medium">{wish.author}</p>

@@ -1,77 +1,82 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+const templates = [
+  {
+    id: 1,
+    name: 'Classic Elegance',
+    description: 'Timeless design with elegant serif fonts',
+    emoji: '✨',
+    category: 'traditional',
+    price: 'Free',
+  },
+  {
+    id: 2,
+    name: 'Modern Minimal',
+    description: 'Clean and contemporary design',
+    emoji: '🎨',
+    category: 'modern',
+    price: 'Basic',
+  },
+  {
+    id: 3,
+    name: 'Romantic Garden',
+    description: 'Floral theme with beautiful colors',
+    emoji: '🌸',
+    category: 'traditional',
+    price: 'Pro',
+  },
+  {
+    id: 4,
+    name: 'Luxury Gold',
+    description: 'Premium design with gold accents',
+    emoji: '👑',
+    category: 'modern',
+    price: 'Pro',
+  },
+];
+
 export default function TemplatesPage() {
-  const [templates, setTemplates] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState('');
-
-  useEffect(() => {
-    const fetchTemplates = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/templates?category=${category}`,
-        );
-        const data = await res.json();
-        setTemplates(data.data || []);
-      } catch (error) {
-        console.error('Failed to fetch templates:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTemplates();
-  }, [category]);
-
   return (
-    <main className="min-h-screen py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">Wedding Card Templates</h1>
-
-        <div className="mb-8 flex justify-center gap-4">
-          <button
-            onClick={() => setCategory('')}
-            className={`px-4 py-2 rounded-lg ${!category ? 'bg-primary text-white' : 'bg-gray-200'}`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setCategory('traditional')}
-            className={`px-4 py-2 rounded-lg ${category === 'traditional' ? 'bg-primary text-white' : 'bg-gray-200'}`}
-          >
-            Traditional
-          </button>
-          <button
-            onClick={() => setCategory('modern')}
-            className={`px-4 py-2 rounded-lg ${category === 'modern' ? 'bg-primary text-white' : 'bg-gray-200'}`}
-          >
-            Modern
-          </button>
+    <main className="min-h-screen bg-light py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-serif font-bold mb-4 text-primary">
+            Choose Your Template
+          </h1>
+          <p className="text-xl text-gray-600">
+            Select from our beautiful collection of wedding card designs
+          </p>
         </div>
 
-        {loading ? (
-          <div className="text-center py-12">Loading templates...</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {templates.map((template: any) => (
-              <Link href={`/editor?templateId=${template.id}`} key={template.id}>
-                <div className="card p-4 cursor-pointer hover:shadow-lg transition">
-                  <div className="bg-gray-200 h-48 rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-gray-500">Template Image</span>
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{template.name}</h3>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">{template.tier}</span>
-                    <button className="btn-primary text-sm py-2 px-3">Use</button>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {templates.map((template) => (
+            <div key={template.id} className="card bg-white p-6 hover:shadow-lg transition">
+              <div className="text-6xl mb-4 text-center">{template.emoji}</div>
+              <h3 className="font-bold text-lg mb-2 text-center">{template.name}</h3>
+              <p className="text-sm text-gray-600 text-center mb-4">{template.description}</p>
+              <div className="text-center mb-4">
+                <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">
+                  {template.price}
+                </span>
+              </div>
+              <Link href="/editor/1" className="btn-primary w-full text-center block">
+                Use Template
               </Link>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white card p-12 text-center">
+          <h2 className="text-2xl font-serif font-bold mb-4">Fully Customizable</h2>
+          <p className="text-gray-600 mb-6">
+            Edit colors, fonts, text, images, and layout to create your unique wedding card
+          </p>
+          <Link href="/editor/1" className="btn-primary inline-block">
+            Start Creating Now
+          </Link>
+        </div>
       </div>
     </main>
   );
