@@ -1,0 +1,24 @@
+{
+  "name": "wedding-card-platform",
+  "version": "1.0.0",
+  "description": "Wedding card platform with editor, RSVP, and gift management",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "db:migrate": "cd apps/api && npx prisma migrate dev"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.3.0"
+  }
+}
