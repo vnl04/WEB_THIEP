@@ -1,0 +1,44 @@
+flowchart TD
+    subgraph S1["1. Designer khởi tạo mẫu"]
+        A1[Designer đăng nhập Template Builder - Designer Mode] --> A2{Tạo mới hay sửa mẫu cũ?}
+        A2 -- Tạo mới --> A3[Tạo bản nháp mới - template_versions status=draft]
+        A2 -- Sửa mẫu đang active --> A4[Tạo version mới từ bản hiện tại, không ảnh hưởng thiệp khách đang dùng]
+        A3 --> A5
+        A4 --> A5[Vào giao diện kéo-thả - dùng chung component với Canvas Editor]
+    end
+
+    subgraph S2["2. Thiết kế bố cục bằng block có sẵn"]
+        A5 --> B1[Chọn & sắp xếp các block: Cover, Countdown, Gallery, Story, Event Info, RSVP, Wishes, Gift, Music]
+        B1 --> B2[Điền nội dung demo: ảnh stock, text placeholder dạng {{groom_name}}, {{bride_name}}...]
+        B2 --> B3[Tuỳ chỉnh theme: màu sắc, font, hiệu ứng]
+        B3 --> B4[Đánh dấu từng field: bắt buộc khách điền / khách tự chọn sửa / khoá cứng không cho sửa]
+        B4 --> B5[Autosave liên tục vào bản draft]
+        B5 --> B6{Muốn xem thử responsive?}
+        B6 -- Có --> B7[Xem preview chế độ Mobile/Desktop]
+        B7 --> B4
+        B6 -- Không --> B8[Tiếp tục hoàn thiện]
+    end
+
+    subgraph S3["3. Hoàn tất & gửi duyệt"]
+        B8 --> C1[Designer bấm Lưu thành mẫu]
+        C1 --> C2[Hệ thống tự chụp ảnh đại diện - headless browser render + screenshot]
+        C2 --> C3[Gán category Cưới/Sinh nhật + tier Free/Basic/Premium]
+        C3 --> C4[Gửi duyệt - status chuyển pending_review]
+        C4 --> C5[Thông báo cho Admin có mẫu mới cần duyệt]
+    end
+
+    subgraph S4["4. Admin/QA kiểm duyệt"]
+        C5 --> D1[Admin mở bản xem trước đầy đủ mẫu]
+        D1 --> D2[Kiểm tra: bố cục không vỡ, responsive ổn, không vi phạm bản quyền ảnh/nhạc]
+        D2 --> D3{Đạt yêu cầu?}
+        D3 -- Không đạt --> D4[Từ chối kèm ghi chú lý do]
+        D4 --> A4
+        D3 -- Đạt --> D5[Duyệt mẫu - status chuyển approved]
+    end
+
+    subgraph S5["5. Xuất bản & vòng đời"]
+        D5 --> E1[Mẫu cũ nếu có chuyển sang archived - giữ nguyên cho thiệp khách đã publish trước đó]
+        E1 --> E2[Mẫu mới xuất hiện công khai trong kho mẫu]
+        E2 --> E3[Khách hàng chọn mẫu -> tạo thiệp mới -> hệ thống thay {{placeholder}} bằng dữ liệu thật của khách]
+        E3 --> E4[Chuyển sang Luồng A - Tạo thiệp]
+    end

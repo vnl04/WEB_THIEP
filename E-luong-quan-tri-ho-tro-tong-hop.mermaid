@@ -1,0 +1,32 @@
+flowchart TD
+    subgraph S1["1. Admin quản trị"]
+        A1[Admin đăng nhập trang quản trị] --> A2{Chọn khu vực}
+        A2 -- Duyệt mẫu thiệp --> A3[Xem mẫu designer gửi lên]
+        A3 --> A4{Đạt chuẩn?}
+        A4 -- Đạt --> A5[Xuất bản lên kho công khai]
+        A4 -- Không đạt --> A6[Từ chối, phản hồi designer]
+
+        A2 -- Kiểm duyệt nội dung --> A7[Rà soát ảnh/lời chúc bị báo cáo]
+        A7 --> A8{Vi phạm?}
+        A8 -- Có --> A9[Ẩn/xoá, cảnh báo tài khoản]
+        A8 -- Không --> A10[Bỏ qua]
+
+        A2 -- Quản lý người dùng --> A11[Xem danh sách, khoá/mở tài khoản vi phạm]
+        A2 -- Đơn hàng & giao dịch --> A12[Duyệt đơn nâng cấp, đơn trọn gói, yêu cầu rút tiền]
+        A2 -- Thống kê doanh thu --> A13[Báo cáo theo gói/thời gian/nguồn]
+    end
+
+    subgraph S2["2. Hỗ trợ khách hàng"]
+        B1[Khách gặp vấn đề] --> B2{Chọn kênh: Chat/Hotline-Zalo/Email/FAQ}
+        B2 --> B3[Nhân viên/Chatbot tiếp nhận]
+        B3 --> B4{Xử lý được ngay?}
+        B4 -- Có --> B5[Trả lời/giải quyết trực tiếp]
+        B4 -- Không --> B6[Chuyển bộ phận kỹ thuật/kế toán]
+        B6 --> A12
+        B6 --> B7[Phản hồi kết quả cho khách]
+        B5 --> B8[Đóng yêu cầu]
+        B7 --> B8
+    end
+
+    A9 --> B2
+    A12 --> B7

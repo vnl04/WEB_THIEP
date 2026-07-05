@@ -1,0 +1,92 @@
+flowchart TB
+    subgraph CLIENT["LỚP NGƯỜI DÙNG (Client)"]
+        C1["Web App - Chủ thiệp\nNext.js/React + Canvas Editor"]
+        C2["Trang xem thiệp - Khách mời\nNext.js SSR để SEO + Open Graph"]
+        C3["Admin Panel\nReact + Ant Design/MUI"]
+    end
+
+    subgraph EDGE["LỚP CỔNG VÀO (Edge/Gateway)"]
+        D1["CDN\nCloudflare/CloudFront - cache ảnh, video, static assets"]
+        D2["API Gateway / Load Balancer\nNginx"]
+        D3["Auth Service\nJWT + OAuth2 Google/Facebook"]
+    end
+
+    subgraph BACKEND["LỚP BACKEND (Application Services)"]
+        E1["Card Service\nQuản lý CRUD thiệp, template, slug"]
+        E2["Guest Service\nDanh sách khách, cá nhân hoá, RSVP"]
+        E3["Wish Service\nLời chúc + bộ lọc từ khoá tự động"]
+        E4["Payment Service\nTích hợp VNPay/Momo/ZaloPay/Stripe"]
+        E5["Gift Service\nQuà mừng cưới, ví, rút tiền"]
+        E6["Notification Service\nEmail/SMS/Push"]
+        E7["Media Service\nUpload, resize, nén ảnh/video"]
+        E8["Admin/Moderation Service\nDuyệt mẫu, kiểm duyệt nội dung"]
+        E9["Affiliate Service\nMã giới thiệu, hoa hồng"]
+    end
+
+    subgraph ASYNC["LỚP XỬ LÝ NỀN (Async/Queue)"]
+        F1["Message Queue\nRabbitMQ/Redis Queue/BullMQ"]
+        F2["Worker: Gửi email/SMS nhắc lịch, thông báo"]
+        F3["Worker: Kiểm tra vòng đời thiệp\nhết lượt xem / hết hạn lưu trữ - Cron Job"]
+        F4["Worker: Xử lý ảnh/video nền\nnén, tạo thumbnail"]
+    end
+
+    subgraph DATA["LỚP DỮ LIỆU (Data Layer)"]
+        G1["PostgreSQL\nDữ liệu chính: users, cards, guests, payments..."]
+        G2["Redis\nCache session, rate-limit, giới hạn lượt xem realtime"]
+        G3["Object Storage\nS3/Cloudinary - lưu ảnh, video, nhạc"]
+        G4["Elasticsearch (tuỳ chọn)\nTìm kiếm & lọc mẫu thiệp nhanh"]
+    end
+
+    subgraph EXTERNAL["DỊCH VỤ BÊN THỨ 3"]
+        H1["Cổng thanh toán\nVNPay/Momo/ZaloPay/Stripe"]
+        H2["Email/SMS Provider\nSendGrid/Twilio/eSMS"]
+        H3["Google Maps API"]
+        H4["Google Analytics / Facebook Pixel"]
+        H5["Ngân hàng - API chuyển khoản rút tiền"]
+    end
+
+    C1 --> D2
+    C2 --> D1
+    C2 --> D2
+    C3 --> D2
+    D2 --> D3
+    D3 --> E1
+
+    D2 --> E1
+    D2 --> E2
+    D2 --> E3
+    D2 --> E4
+    D2 --> E5
+    D2 --> E7
+    D2 --> E8
+    D2 --> E9
+
+    E1 --> G1
+    E2 --> G1
+    E3 --> G1
+    E4 --> G1
+    E5 --> G1
+    E8 --> G1
+    E9 --> G1
+
+    E1 --> G4
+    E1 --> G2
+    E2 --> F1
+    E5 --> F1
+    E6 --> F1
+    F1 --> F2
+    F1 --> F3
+    F1 --> F4
+
+    E7 --> G3
+    F4 --> G3
+
+    E4 --> H1
+    F2 --> H2
+    E1 --> H3
+    E1 --> H4
+    E5 --> H5
+
+    F3 --> G1
+    F2 --> C1
+    F2 --> C2

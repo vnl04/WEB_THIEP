@@ -1,0 +1,252 @@
+erDiagram
+    USERS ||--o{ CARDS : "sở hữu (owner)"
+    USERS ||--o{ CARD_EDITORS : "được mời đồng chỉnh sửa"
+    CARDS ||--o{ CARD_EDITORS : "có người đồng chỉnh sửa"
+    TEMPLATES ||--o{ CARDS : "được dùng để tạo"
+    ADMIN_USERS ||--o{ TEMPLATES : "duyệt/tạo"
+
+    CARDS ||--o{ MEDIA_ASSETS : "chứa ảnh/video/nhạc"
+    CARDS ||--o{ GUESTS : "có danh sách khách mời"
+    GUESTS ||--o| RSVPS : "xác nhận tham dự"
+    CARDS ||--o{ WISHES : "nhận lời chúc"
+    GUESTS ||--o{ WISHES : "gửi lời chúc"
+    CARDS ||--o{ GIFTS : "nhận mừng cưới"
+    GUESTS ||--o{ GIFTS : "gửi quà"
+
+    CARDS ||--o| ANALYTICS_INTEGRATIONS : "tích hợp GA/Pixel"
+
+    USERS ||--o{ WITHDRAWALS : "yêu cầu rút tiền"
+    USERS ||--o{ PAYMENTS : "thực hiện thanh toán"
+    USERS ||--o{ SUBSCRIPTIONS : "đăng ký gói"
+    PLANS ||--o{ SUBSCRIPTIONS : "áp dụng cho"
+    SUBSCRIPTIONS ||--o| PAYMENTS : "phát sinh từ"
+
+    USERS ||--o{ FULL_SERVICE_ORDERS : "đặt dịch vụ trọn gói"
+    ADMIN_USERS ||--o{ FULL_SERVICE_ORDERS : "phụ trách thiết kế"
+
+    USERS ||--o{ AFFILIATE_CODES : "sở hữu mã giới thiệu"
+    AFFILIATE_CODES ||--o{ AFFILIATE_REFERRALS : "phát sinh lượt giới thiệu"
+    USERS ||--o{ AFFILIATE_REFERRALS : "là người được giới thiệu"
+
+    USERS ||--o{ NOTIFICATIONS : "nhận thông báo"
+    USERS ||--o{ SUPPORT_TICKETS : "gửi yêu cầu hỗ trợ"
+    ADMIN_USERS ||--o{ SUPPORT_TICKETS : "xử lý"
+
+    WISHES ||--o{ REPORTS : "bị báo cáo vi phạm"
+    MEDIA_ASSETS ||--o{ REPORTS : "bị báo cáo vi phạm"
+    USERS ||--o{ REPORTS : "gửi báo cáo"
+    ADMIN_USERS ||--o{ REPORTS : "xử lý báo cáo"
+
+    USERS {
+        uuid id PK
+        string full_name
+        string email
+        string phone
+        string password_hash
+        string avatar_url
+        string auth_provider "email/google/facebook"
+        datetime created_at
+    }
+
+    ADMIN_USERS {
+        uuid id PK
+        string full_name
+        string email
+        string role "super_admin/moderator/designer/support"
+    }
+
+    TEMPLATES {
+        uuid id PK
+        string name
+        string category "wedding/birthday/event"
+        string tier "free/basic/premium"
+        string thumbnail_url
+        boolean is_active
+        uuid created_by_admin_id FK
+        datetime created_at
+    }
+
+    CARDS {
+        uuid id PK
+        uuid owner_id FK
+        uuid template_id FK
+        string slug UK
+        string groom_name
+        string bride_name
+        date wedding_date
+        time event_time
+        string location_groom
+        string location_bride
+        boolean personalization_enabled
+        string status "draft/published/expired/locked"
+        int view_count
+        int view_limit
+        datetime expire_at
+        datetime published_at
+        datetime created_at
+    }
+
+    CARD_EDITORS {
+        uuid id PK
+        uuid card_id FK
+        uuid user_id FK
+        string role "owner/co_editor"
+        string invite_status "pending/accepted/declined"
+        datetime invited_at
+    }
+
+    MEDIA_ASSETS {
+        uuid id PK
+        uuid card_id FK
+        string type "image/video/audio/youtube_embed"
+        string url
+        string section "album/cover/music/story"
+        int order_index
+    }
+
+    GUESTS {
+        uuid id PK
+        uuid card_id FK
+        string name
+        string phone
+        string email
+        string personalized_title "Anh/Chị/Cô/Chú..."
+        string invite_token UK
+        string send_status "not_sent/sent"
+        int reminder_count
+        datetime viewed_at
+        datetime created_at
+    }
+
+    RSVPS {
+        uuid id PK
+        uuid guest_id FK
+        uuid card_id FK
+        string status "attending/not_attending/no_response"
+        int num_people
+        datetime responded_at
+    }
+
+    WISHES {
+        uuid id PK
+        uuid card_id FK
+        uuid guest_id FK
+        string content
+        string status "pending/approved/hidden/deleted"
+        boolean is_pinned
+        datetime created_at
+    }
+
+    GIFTS {
+        uuid id PK
+        uuid card_id FK
+        uuid guest_id FK
+        decimal amount
+        string method "bank_qr/virtual_gift"
+        string status "success/pending/failed"
+        datetime created_at
+    }
+
+    WITHDRAWALS {
+        uuid id PK
+        uuid user_id FK
+        decimal amount
+        string bank_account_info
+        string status "pending/approved/rejected/completed"
+        datetime requested_at
+        datetime processed_at
+    }
+
+    PLANS {
+        uuid id PK
+        string name "free/basic/premium"
+        decimal price
+        int view_limit
+        int storage_duration_months
+        json features_json
+    }
+
+    SUBSCRIPTIONS {
+        uuid id PK
+        uuid user_id FK
+        uuid card_id FK
+        uuid plan_id FK
+        datetime start_at
+        datetime end_at
+        string status "active/expired/cancelled"
+    }
+
+    PAYMENTS {
+        uuid id PK
+        uuid user_id FK
+        uuid subscription_id FK
+        decimal amount
+        string method "bank_transfer/momo/zalopay/card"
+        string status "success/failed/pending"
+        string transaction_ref
+        datetime created_at
+    }
+
+    FULL_SERVICE_ORDERS {
+        uuid id PK
+        uuid user_id FK
+        string requirement_description
+        decimal quoted_price
+        string urgency_type "normal/urgent_2h/urgent_6h/urgent_12h"
+        string status "requested/quoted/paid/in_progress/delivered"
+        uuid assigned_admin_id FK
+        datetime created_at
+    }
+
+    AFFILIATE_CODES {
+        uuid id PK
+        uuid user_id FK
+        string code UK
+        datetime created_at
+    }
+
+    AFFILIATE_REFERRALS {
+        uuid id PK
+        uuid affiliate_code_id FK
+        uuid referred_user_id FK
+        decimal reward_amount
+        string status "pending/rewarded"
+        datetime created_at
+    }
+
+    NOTIFICATIONS {
+        uuid id PK
+        uuid user_id FK
+        string type "payment/rsvp/wish/gift/expiry_warning"
+        string content
+        boolean is_read
+        datetime created_at
+    }
+
+    SUPPORT_TICKETS {
+        uuid id PK
+        uuid user_id FK
+        string channel "chat/hotline/email/faq"
+        string subject
+        string status "open/in_progress/resolved"
+        uuid assigned_admin_id FK
+        datetime created_at
+    }
+
+    ANALYTICS_INTEGRATIONS {
+        uuid id PK
+        uuid card_id FK
+        string ga_tracking_id
+        string fb_pixel_id
+    }
+
+    REPORTS {
+        uuid id PK
+        string target_type "wish/media"
+        uuid target_id
+        uuid reporter_user_id FK
+        string reason
+        string status "pending/resolved/dismissed"
+        uuid handled_by_admin_id FK
+        datetime created_at
+    }

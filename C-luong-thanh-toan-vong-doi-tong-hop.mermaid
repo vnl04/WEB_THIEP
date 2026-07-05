@@ -1,0 +1,45 @@
+flowchart TD
+    subgraph S1["1. Chọn hình thức dịch vụ"]
+        A1{Khách chọn hình thức} -- Tự làm, nâng gói --> A2[Xem bảng giá Free/Basic/Premium]
+        A1 -- Thuê trọn gói --> A3[Điền form yêu cầu thiết kế theo mẫu tham khảo]
+        A3 --> A4[Tư vấn viên báo giá: Thường/Hoả tốc 2h-6h-12h]
+        A4 --> A5{Đồng ý giá?}
+        A5 -- Không --> A3
+        A5 -- Có --> A6[Thanh toán 1 lần, không cần tài khoản]
+        A6 --> A7[Đội thiết kế làm - gửi bản nháp - khách duyệt/chỉnh sửa - bàn giao link hoàn chỉnh]
+    end
+
+    subgraph S2["2. Thanh toán nâng cấp gói"]
+        A2 --> B1{Có mã giảm giá từ affiliate?}
+        B1 -- Có --> B2[Áp dụng mã giảm giá]
+        B1 -- Không --> B3[Giá gốc]
+        B2 --> B4
+        B3 --> B4[Chọn phương thức: chuyển khoản/ví điện tử/thẻ]
+        B4 --> B5[Cổng thanh toán xử lý]
+        B5 --> B6{Thành công?}
+        B6 -- Không --> B7[Báo lỗi, thử lại]
+        B7 --> B4
+        B6 -- Có --> B8[Kích hoạt gói: xoá watermark, mở khoá template, tăng lượt xem, gia hạn lưu trữ]
+        B8 --> B9[Gửi email xác nhận]
+    end
+
+    subgraph S3["3. Vòng đời thiệp"]
+        B9 --> C1[Theo dõi lượt xem & thời gian lưu trữ theo thời gian thực]
+        A7 --> C1
+        C1 --> C2{Đạt giới hạn lượt xem?}
+        C2 -- Có --> C3[Khoá tạm, cảnh báo nâng cấp/mua thêm lượt xem]
+        C2 -- Chưa --> C4{Hết hạn lưu trữ?}
+        C4 -- Chưa --> C1
+        C4 -- Có --> C5[Ẩn thiệp, đếm ngược 30 ngày ân hạn]
+        C5 --> C6{Gia hạn trong 30 ngày?}
+        C6 -- Có --> C1
+        C6 -- Không --> C7[Xoá vĩnh viễn dữ liệu]
+    end
+
+    subgraph S4["4. Chương trình giới thiệu - Affiliate"]
+        D1[Người dùng lấy link giới thiệu riêng] --> D2[Chia sẻ cho bạn bè]
+        D2 --> D3[Bạn bè đăng ký + phát sinh đơn nâng cấp]
+        D3 --> D4[Tính hoa hồng/ưu đãi, cộng vào ví người giới thiệu]
+        D4 --> B1
+        D4 --> D5[Hoặc rút tiền mặt về ngân hàng]
+    end

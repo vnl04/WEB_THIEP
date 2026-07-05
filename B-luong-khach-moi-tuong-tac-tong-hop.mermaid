@@ -1,0 +1,43 @@
+flowchart TD
+    subgraph S1["1. Mở thiệp"]
+        A1[Khách nhận link/QR] --> A2[Mở thiệp trên điện thoại/máy tính]
+        A2 --> A3{Thiệp bật cá nhân hoá tên?}
+        A3 -- Có --> A4[Hiển thị tên khách riêng: "Kính mời Anh/Chị..."]
+        A3 -- Không --> A5[Hiển thị thiệp mặc định]
+        A4 --> A6[Xem thông tin cưới, album ảnh, câu chuyện tình yêu, bản đồ]
+        A5 --> A6
+    end
+
+    subgraph S2["2. Tương tác"]
+        A6 --> B1{Khách chọn hành động}
+        B1 -- Xác nhận tham dự --> B2[Điền RSVP: tham dự/không, số người đi cùng]
+        B1 -- Gửi lời chúc --> B3[Viết lời chúc]
+        B1 -- Mừng cưới --> B4[Quét QR chuyển khoản hoặc tặng quà ảo có hiệu ứng]
+        B1 -- Chỉ xem --> B5[Đóng thiệp]
+    end
+
+    subgraph S3["3. Kiểm duyệt & xử lý"]
+        B3 --> C1[Bộ lọc từ khoá tự động quét nội dung]
+        C1 --> C2{Phát hiện vi phạm nặng?}
+        C2 -- Không --> C3[Tự động hiển thị công khai]
+        C2 -- Có --> C4[Chặn tạm, đưa vào hàng chờ chủ thiệp duyệt tay]
+        C4 --> C5{Chủ thiệp duyệt?}
+        C5 -- Đăng --> C3
+        C5 -- Xoá --> C6[Xoá vĩnh viễn]
+
+        B4 --> C7[Giao dịch xử lý qua cổng thanh toán]
+        B2 --> C8[Ghi nhận RSVP vào hệ thống]
+    end
+
+    subgraph S4["4. Nhắc lịch tự động"]
+        C8 --> D1{Còn khách chưa RSVP khi gần ngày cưới?}
+        D1 -- Có --> D2[Tự động gửi nhắc qua Zalo/SMS/Email, tối đa N lần]
+        D2 --> D3{Phản hồi sau nhắc?}
+        D3 -- Có --> C8
+        D3 -- Không, hết lượt nhắc --> D4[Đánh dấu "không phản hồi", báo chủ thiệp]
+        D1 -- Không --> D5[Không cần nhắc]
+    end
+
+    C3 --> E1[Cập nhật thống kê trên Dashboard chủ thiệp]
+    C7 --> E1
+    C8 --> E1
