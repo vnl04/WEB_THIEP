@@ -168,23 +168,17 @@ class ApiClient {
     return this.client.get(`/cards/${cardId}/gift-info`);
   }
 
-  // Plan endpoints
-  getPlans() {
-    return this.client.get('/plans');
-  }
-
-  // Subscription endpoints
-  createSubscription(cardId: string, planId: string) {
-    return this.client.post('/subscriptions', { cardId, planId });
-  }
-
   // Payment endpoints
   createCheckout(data: any) {
     return this.client.post('/payments/checkout', data);
   }
 
-  getPaymentStatus(paymentId: string) {
-    return this.client.get(`/payments/${paymentId}`);
+  createPayment(data: any) {
+    return this.client.post('/payments/create', data);
+  }
+
+  getPayments(query?: any) {
+    return this.client.get('/payments', { params: query });
   }
 
   // Media endpoints
@@ -204,28 +198,16 @@ class ApiClient {
     return this.client.delete(`/cards/${cardId}/media/${mediaId}`);
   }
 
-  // Payment endpoints
-  createPayment(data: any) {
-    return this.client.post('/payments/create', data);
-  }
-
-  getPaymentStatus(transactionId: string) {
-    return this.client.get(`/payments/${transactionId}/status`);
-  }
-
-  getPayments(query?: any) {
-    return this.client.get('/payments', { params: query });
-  }
-
-  // Subscription endpoints
+  // Plan endpoints
   getPlan(planId: string) {
     return this.client.get(`/subscriptions/plans/${planId}`);
   }
 
   getPlans() {
-    return this.client.get('/subscriptions/plans');
+    return this.client.get('/plans');
   }
 
+  // Subscription endpoints
   createSubscription(cardId: string, planId: string) {
     return this.client.post('/subscriptions', { cardId, planId });
   }

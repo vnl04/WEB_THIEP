@@ -1,12 +1,16 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { EmailService } from '../../services/email.service';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class PaymentWebhookHandler {
   private logger = new Logger(PaymentWebhookHandler.name);
 
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) { }
 
   /**
    * Handle VNPay webhook callback
@@ -96,16 +100,39 @@ export class PaymentWebhookHandler {
 
       this.logger.log(`Processing gift payment webhook for gift ${giftId}`);
 
-      // Update gift status
+      // Update gift status with card owner details
       const gift = await this.prisma.gift.update({
         where: { id: giftId },
         data: {
           status: status === 'success' ? 'confirmed' : 'failed',
           transactionId,
         },
+        include: {
+          card: {
+            include: {
+              user: true,
+            },
+          },
+        },
       });
 
-      // TODO: Send notification email to card owner
+      // Send notification email to card owner if gift confirmed
+      if (status === 'success' && gift.card.user.email) {
+        try {
+          await this.emailService.sendGiftNotification(
+            gift.card.user.email,
+            'Anonymous Donor',
+            gift.amount,
+            gift.currency,
+            gift.card.name || 'Your Wedding Card',
+          );
+          this.logger.log(`Gift notification email sent to ${gift.card.user.email}`);
+        } catch (emailError) {
+          const errorMessage = emailError instanceof Error ? emailError.message : 'Unknown error';
+          this.logger.warn(`Failed to send gift notification email: ${errorMessage}`);
+          // Don't fail webhook if email fails
+        }
+      }
 
       return { success: true, gift };
     } catch (error) {
