@@ -1,12 +1,13 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
+import { QueryTemplatesDto } from './dto';
 
 @Controller('v1/templates')
 export class TemplatesController {
   constructor(private templatesService: TemplatesService) {}
 
   @Get()
-  async getAllTemplates(@Query() query: any) {
+  async getAllTemplates(@Query() query: QueryTemplatesDto) {
     return this.templatesService.getAllTemplates(query);
   }
 

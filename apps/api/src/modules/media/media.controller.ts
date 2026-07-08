@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { MediaService } from './media.service';
+import { CreateMediaDto } from './dto';
 
 @Controller('v1/cards/:cardId/media')
 export class MediaController {
@@ -8,8 +9,8 @@ export class MediaController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  async uploadMedia(@Param('cardId') cardId: string, @Body() data: any) {
-    return this.mediaService.uploadMedia(cardId, data);
+  async uploadMedia(@Param('cardId') cardId: string, @Body() dto: CreateMediaDto) {
+    return this.mediaService.uploadMedia(cardId, dto);
   }
 
   @Get()

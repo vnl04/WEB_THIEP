@@ -11,6 +11,8 @@ import { WishesModule } from './modules/wishes/wishes.module';
 import { GiftsModule } from './modules/gifts/gifts.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { WithdrawalsModule } from './modules/withdrawals/withdrawals.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { SecurityMiddleware } from './middleware/security.middleware';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 
@@ -30,6 +32,8 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
     GiftsModule,
     PaymentsModule,
     SubscriptionsModule,
+    WithdrawalsModule,
+    AdminModule,
   ],
 })
 export class AppModule implements NestModule {

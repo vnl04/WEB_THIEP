@@ -33,10 +33,37 @@ export class ErrorInterceptor implements NestInterceptor {
           );
         }
 
-        // Handle Prisma validation errors
+        // Handle Prisma record not found errors
         if (error.code === 'P2025') {
           return throwError(
             () => new BadRequestException('Record not found'),
+          );
+        }
+
+        // Handle Prisma foreign key constraint errors
+        if (error.code === 'P2003') {
+          return throwError(
+            () => new BadRequestException('Referenced record does not exist'),
+          );
+        }
+
+        // Handle Prisma validation errors
+        if (error.code === 'P2007') {
+          return throwError(
+            () => new BadRequestException('Data validation error'),
+          );
+        }
+
+        // Handle class-validator errors (DTO validation)
+        if (Array.isArray(error.message)) {
+          const messages = error.message.map((msg: any) => {
+            if (typeof msg === 'object' && msg.constraints) {
+              return Object.values(msg.constraints).join(', ');
+            }
+            return msg;
+          }).join('; ');
+          return throwError(
+            () => new BadRequestException(messages),
           );
         }
 
@@ -47,6 +74,11 @@ export class ErrorInterceptor implements NestInterceptor {
 
         // Handle authorization errors
         if (error.status === 401 || error.status === 403) {
+          return throwError(() => error);
+        }
+
+        // Handle custom business logic errors
+        if (error.status >= 400 && error.status < 500) {
           return throwError(() => error);
         }
 

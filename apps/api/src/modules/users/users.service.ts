@@ -32,4 +32,24 @@ export class UsersService {
       },
     });
   }
+
+  async updateBankAccount(userId: string, data: any) {
+    // Upsert bank account (create if doesn't exist, update if does)
+    return this.prisma.bankAccount.upsert({
+      where: { userId },
+      create: {
+        userId,
+        ...data,
+      },
+      update: {
+        ...data,
+      },
+    });
+  }
+
+  async getBankAccount(userId: string) {
+    return this.prisma.bankAccount.findUnique({
+      where: { userId },
+    });
+  }
 }

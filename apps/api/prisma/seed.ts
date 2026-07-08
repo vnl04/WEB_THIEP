@@ -14,6 +14,65 @@ const templateBlocks = [
 async function main() {
   console.log('🌱 Starting database seed...');
 
+  // Create subscription plans
+  const plans = [
+    {
+      id: 'plan-free',
+      name: 'free',
+      displayName: 'Free Plan',
+      price: 0,
+      duration: 0,
+      features: {
+        maxCards: 1,
+        maxGuests: 50,
+        basicTemplates: true,
+        premiumTemplates: false,
+        customDomain: false,
+        analytics: false,
+      },
+    },
+    {
+      id: 'plan-basic',
+      name: 'basic',
+      displayName: 'Basic Plan',
+      price: 99000,
+      duration: 30,
+      features: {
+        maxCards: 5,
+        maxGuests: 200,
+        basicTemplates: true,
+        premiumTemplates: true,
+        customDomain: false,
+        analytics: false,
+      },
+    },
+    {
+      id: 'plan-premium',
+      name: 'premium',
+      displayName: 'Premium Plan',
+      price: 299000,
+      duration: 30,
+      features: {
+        maxCards: 99,
+        maxGuests: 99999,
+        basicTemplates: true,
+        premiumTemplates: true,
+        customDomain: true,
+        analytics: true,
+      },
+    },
+  ];
+
+  for (const plan of plans) {
+    await prisma.plan.upsert({
+      where: { name: plan.name },
+      update: { price: plan.price },
+      create: plan,
+    });
+  }
+
+  console.log(`✅ Created ${plans.length} subscription plans`);
+
   const templates = [
     {
       id: 'template-1',
@@ -72,17 +131,50 @@ async function main() {
   console.log(`✅ Created ${templates.length} templates`);
 
   const hashedPassword = await bcrypt.hash('password123', 10);
+  
+  // Create admin user
   await prisma.user.upsert({
+    where: { email: 'admin@weddingcard.vn' },
+    update: {},
+    create: {
+      email: 'admin@weddingcard.vn',
+      name: 'Admin User',
+      password: hashedPassword,
+      role: 'ADMIN',
+    },
+  });
+
+  console.log('✅ Created admin user: admin@weddingcard.vn / password123');
+
+  // Create demo user
+  const demoUser = await prisma.user.upsert({
     where: { email: 'demo@weddingcard.vn' },
     update: {},
     create: {
       email: 'demo@weddingcard.vn',
       name: 'Demo User',
       password: hashedPassword,
+      role: 'USER',
     },
   });
 
   console.log('✅ Created demo user: demo@weddingcard.vn / password123');
+
+  // Create demo bank account
+  await prisma.bankAccount.upsert({
+    where: { userId: demoUser.id },
+    update: {},
+    create: {
+      userId: demoUser.id,
+      accountNumber: '1234567890',
+      accountHolder: 'Demo User',
+      bankCode: 'VCB',
+      accountType: 'Savings',
+    },
+  });
+
+  console.log('✅ Created demo bank account');
+
   console.log('✅ Database seed completed!');
 }
 

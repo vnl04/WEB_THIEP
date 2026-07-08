@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ErrorInterceptor } from './common/error.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +12,10 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
     credentials: true,
   });
+
+  // Global error handlers
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new ErrorInterceptor());
 
   // Swagger API docs
   const config = new DocumentBuilder()

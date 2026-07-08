@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Patch, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GuestsService } from './guests.service';
+import { CreateGuestDto, SubmitRsvpDto } from './dto';
 
 @Controller('v1/cards/:cardId/guests')
 export class GuestsController {
@@ -8,8 +9,8 @@ export class GuestsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  async addGuest(@Param('cardId') cardId: string, @Request() req: any, @Body() data: any) {
-    return this.guestsService.addGuest(cardId, req.user.id, data);
+  async addGuest(@Param('cardId') cardId: string, @Request() req: any, @Body() dto: CreateGuestDto) {
+    return this.guestsService.addGuest(cardId, req.user.id, dto);
   }
 
   @Get()
@@ -28,7 +29,7 @@ export class GuestTrackingController {
   }
 
   @Post(':guestId/rsvp')
-  async submitRsvp(@Param('guestId') guestId: string, @Body() data: any) {
-    return this.guestsService.submitRsvp(guestId, data.status, data.count);
+  async submitRsvp(@Param('guestId') guestId: string, @Body() dto: SubmitRsvpDto) {
+    return this.guestsService.submitRsvp(guestId, dto.status, dto.count);
   }
 }

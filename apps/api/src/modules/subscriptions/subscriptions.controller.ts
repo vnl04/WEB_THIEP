@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { SubscriptionsService } from './subscriptions.service';
+import { CreateSubscriptionDto } from './dto';
 
 @Controller('v1')
 export class SubscriptionsController {
@@ -8,8 +9,8 @@ export class SubscriptionsController {
 
   @Post('subscriptions')
   @UseGuards(AuthGuard('jwt'))
-  async createSubscription(@Request() req: any, @Body() data: any) {
-    return this.subscriptionsService.createSubscription(req.user.id, data.cardId, data.planId);
+  async createSubscription(@Request() req: any, @Body() dto: CreateSubscriptionDto) {
+    return this.subscriptionsService.createSubscription(req.user.id, dto.cardId, dto.planId);
   }
 
   @Get('plans')

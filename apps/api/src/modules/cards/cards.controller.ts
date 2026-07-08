@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Patch, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CardsService } from './cards.service';
+import { CreateCardDto, UpdateCardDto } from './dto';
 
 @Controller('v1/cards')
 export class CardsController {
@@ -8,8 +9,8 @@ export class CardsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  async createCard(@Request() req: any, @Body() data: any) {
-    return this.cardsService.createCard(req.user.id, data.templateId, data);
+  async createCard(@Request() req: any, @Body() dto: CreateCardDto) {
+    return this.cardsService.createCard(req.user.id, dto.templateId, dto);
   }
 
   @Get()
@@ -25,8 +26,8 @@ export class CardsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  async updateCard(@Param('id') id: string, @Body() data: any) {
-    return this.cardsService.updateCard(id, data);
+  async updateCard(@Param('id') id: string, @Body() dto: UpdateCardDto) {
+    return this.cardsService.updateCard(id, dto);
   }
 
   @Post(':id/publish')
