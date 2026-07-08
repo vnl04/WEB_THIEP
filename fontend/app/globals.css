@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  
+  --color-white: #FFFFFF;
+  --color-cream: #FFF8F5;
+  --color-rose: #F43F5E;
+  --color-pink: #EC4899;
+  --color-gold: #D4A574;
+  --color-dark: #111827;
+  --color-gray: #6B7280;
+  --color-light-gray: #F3F4F6;
+  
+  --radius: 1rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  * {
+    @apply transition-all duration-300;
+  }
+  
+  body {
+    @apply bg-white text-gray-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold;
+  }
+  
+  body, p, span, button, a {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-rose to-pink bg-clip-text text-transparent;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-rose to-pink text-white px-6 py-3 rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all;
+  }
+  
+  .btn-secondary {
+    @apply border border-gray rounded-full px-6 py-3 font-medium hover:border-rose hover:text-rose transition-all;
+  }
+
+  .input-field {
+    @apply w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-rose bg-white;
+  }
+
+  .dashboard-card {
+    @apply bg-white rounded-xl border border-gray-100 shadow-sm p-6;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-2xl hover:-translate-y-2 transition-all duration-300;
+  }
+  
+  .floating-blob {
+    @apply absolute rounded-full blur-3xl opacity-20;
+  }
+  
+  .fade-in {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .fade-in-delay-1 {
+    animation: fadeInUp 0.6s ease-out 0.1s forwards;
+    opacity: 0;
+  }
+  
+  .fade-in-delay-2 {
+    animation: fadeInUp 0.6s ease-out 0.2s forwards;
+    opacity: 0;
+  }
+  
+  .fade-in-delay-3 {
+    animation: fadeInUp 0.6s ease-out 0.3s forwards;
+    opacity: 0;
+  }
+  
+  .scale-in {
+    animation: scaleIn 0.6s ease-out forwards;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}

@@ -1,0 +1,321 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  name          String?
+  password      String
+  avatar        String?
+  phone         String?
+  role          Role       @default(USER)
+  
+  // OAuth fields
+  googleId      String?    @unique
+  facebookId    String?    @unique
+  
+  // Bank account for receiving gifts
+  bankAccountId String?
+  bankAccount   BankAccount?
+  
+  // Relations
+  cards         Card[]
+  editors       EditorInvite[]
+  guests        Guest[]
+  wishes        Wish[]
+  gifts         Gift[]
+  withdrawals   Withdrawal[]
+  subscriptions Subscription[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model BankAccount {
+  id            String     @id @default(cuid())
+  userId        String     @unique
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  accountNumber String
+  accountHolder String
+  bankCode      String     // VietcomBank, Agribank, etc
+  accountType   String?    // Savings, Checking
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Template {
+  id            String     @id @default(cuid())
+  name          String
+  description   String?
+  category      String     // Cách B, Cách C, etc
+  tier          String     @default("free") // free, basic, premium
+  thumbnail     String
+  preview       String
+  
+  // Block structure (JSON)
+  blocks        Json       // Array of block definitions
+  
+  status        String     @default("draft") // draft, approved, rejected
+  rejectionReason String?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  cards         Card[]
+}
+
+model Card {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  templateId    String
+  template      Template   @relation(fields: [templateId], references: [id])
+  
+  // Metadata
+  name          String     @default("Untitled Card")
+  slug          String?    @unique
+  
+  // Content
+  brideName     String?
+  groomName     String?
+  weddingDate   DateTime?
+  story         String?
+  
+  // Settings
+  content       Json       // Full block content
+  design        Json?      // Design settings (colors, fonts, music)
+  ogTags        Json?      // Open Graph metadata
+  
+  // Publishing
+  published     Boolean    @default(false)
+  publishedAt   DateTime?
+  
+  // Statistics
+  viewCount     Int        @default(0)
+  likeCount     Int        @default(0)
+  
+  // Co-editors
+  editors       EditorInvite[]
+  
+  // Content
+  media         Media[]
+  guests        Guest[]
+  wishes        Wish[]
+  gifts         Gift[]
+  subscriptions Subscription[]
+  
+  // Analytics
+  analytics     Analytics?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model EditorInvite {
+  id            String     @id @default(cuid())
+  cardId        String
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  inviteeId     String
+  invitee       User       @relation(fields: [inviteeId], references: [id], onDelete: Cascade)
+  
+  token         String     @unique
+  status        String     @default("pending") // pending, accepted, rejected
+  
+  createdAt     DateTime   @default(now())
+  acceptedAt    DateTime?
+}
+
+model Media {
+  id            String     @id @default(cuid())
+  cardId        String
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  type          String     // image, video, music
+  url           String
+  title         String?
+  section       String     // cover, gallery, etc
+  order         Int        @default(0)
+  
+  createdAt     DateTime   @default(now())
+}
+
+model Guest {
+  id            String     @id @default(cuid())
+  cardId        String
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name          String
+  email         String?
+  phone         String?
+  
+  // Invitation tracking
+  inviteToken   String     @unique
+  sentAt        DateTime?
+  viewedAt      DateTime?
+  
+  // RSVP
+  rsvpStatus    String?    // attending, not-attending, pending
+  rsvpCount     Int        @default(1)
+  rsvpAt        DateTime?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Wish {
+  id            String     @id @default(cuid())
+  cardId        String
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  content       String
+  
+  // Moderation
+  status        String     @default("pending") // pending, approved, rejected
+  hidden        Boolean    @default(false)
+  pinned        Boolean    @default(false)
+  
+  // Reports
+  reportCount   Int        @default(0)
+  reports       Report[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Gift {
+  id            String     @id @default(cuid())
+  cardId        String
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  donorId       String?
+  donor         User?      @relation(fields: [donorId], references: [id])
+  
+  // Payment tracking
+  amount        Float
+  currency      String     @default("VND")
+  paymentMethod String     // bank_transfer, momo, zalopay, stripe
+  transactionId String?    @unique
+  
+  // Status
+  status        String     @default("pending") // pending, confirmed, failed
+  
+  message       String?
+  
+  createdAt     DateTime   @default(now())
+}
+
+model Report {
+  id            String     @id @default(cuid())
+  wishId        String
+  wish          Wish       @relation(fields: [wishId], references: [id], onDelete: Cascade)
+  
+  reason        String     // spam, offensive, inappropriate
+  description   String?
+  
+  // Admin action
+  resolved      Boolean    @default(false)
+  resolutionNote String?
+  
+  createdAt     DateTime   @default(now())
+}
+
+model Subscription {
+  id            String     @id @default(cuid())
+  cardId        String
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  planId        String
+  plan          Plan       @relation(fields: [planId], references: [id])
+  
+  status        String     @default("active") // active, canceled, expired
+  
+  startDate     DateTime   @default(now())
+  endDate       DateTime?
+  
+  createdAt     DateTime   @default(now())
+}
+
+model Plan {
+  id            String     @id @default(cuid())
+  name          String     @unique // free, basic, premium
+  displayName   String
+  price         Float      @default(0)
+  duration      Int        @default(0) // days, 0 = unlimited
+  
+  features      Json       // Array of feature flags
+  
+  subscriptions Subscription[]
+  
+  createdAt     DateTime   @default(now())
+}
+
+model Payment {
+  id            String     @id @default(cuid())
+  
+  userId        String
+  subscriptionId String?
+  
+  amount        Float
+  currency      String     @default("VND")
+  
+  provider      String     // vnpay, momo, zalopay, stripe
+  transactionId String?    @unique
+  
+  status        String     @default("pending") // pending, completed, failed
+  
+  createdAt     DateTime   @default(now())
+  completedAt   DateTime?
+}
+
+model Withdrawal {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  amount        Float
+  bankAccountId String
+  
+  status        String     @default("pending") // pending, processing, completed, rejected
+  rejectionReason String?
+  
+  createdAt     DateTime   @default(now())
+  processedAt   DateTime?
+}
+
+model Analytics {
+  id            String     @id @default(cuid())
+  cardId        String     @unique
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  googleAnalyticsId String?
+  facebookPixelId   String?
+  
+  customDomain  String?
+  
+  updatedAt     DateTime   @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
