@@ -44,6 +44,13 @@ export default function FeaturesSection() {
     },
   ];
 
+  const stats = [
+    { value: '2,500+', label: 'Cặp đôi đã dùng', icon: '💑' },
+    { value: '250K+', label: 'Khách mời đã nhận thiệp', icon: '✉️' },
+    { value: '50M+', label: 'Quà tặng qua nền tảng', icon: '🎁' },
+    { value: '4.9⭐', label: 'Đánh giá trung bình', icon: '💛' },
+  ];
+
   return (
     <section className="section bg-surface-light" id="features">
       <div className="section-wide">
@@ -57,7 +64,7 @@ export default function FeaturesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {features.map((feature, index) => (
             <div
               key={index}
@@ -71,30 +78,18 @@ export default function FeaturesSection() {
             </div>
           ))}
         </div>
+
+        {/* Bottom stats strip */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {stats.map((stat, i) => (
+            <div key={i} className="text-center p-5 rounded-2xl bg-gradient-to-b from-rose-50 to-white border border-rose-50 hover:border-rose-100 transition-colors">
+              <div className="text-2xl mb-2">{stat.icon}</div>
+              <div className="font-serif text-2xl md:text-3xl font-semibold text-rose-500 mb-1">{stat.value}</div>
+              <p className="font-sans text-xs text-gray-500">{stat.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
-  );
-}
-        </div >
-
-  {/* Bottom stats strip */ }
-  < div className = "mt-16 grid grid-cols-2 md:grid-cols-4 gap-6" >
-  {
-    [
-    { value: '2,500+', label: 'Cặp đôi đã dùng', icon: '💑' },
-    { value: '250K+', label: 'Khách mời đã nhận thiệp', icon: '✉️' },
-    { value: '50M+', label: 'Quà tặng qua nền tảng', icon: '🎁' },
-    { value: '4.9⭐', label: 'Đánh giá trung bình', icon: '💛' },
-          ].map((stat, i) => (
-      <div key={i} className="text-center p-5 rounded-2xl bg-gradient-to-b from-rose-50 to-white border border-rose-50 hover:border-rose-100 transition-colors">
-        <div className="text-2xl mb-2">{stat.icon}</div>
-        <div className="font-serif text-2xl md:text-3xl font-semibold text-rose-500 mb-1">{stat.value}</div>
-        <p className="font-sans text-xs text-gray-500">{stat.label}</p>
-      </div>
-    ))
-  }
-        </div >
-      </div >
-    </section >
   );
 }

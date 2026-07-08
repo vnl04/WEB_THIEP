@@ -1,5 +1,5 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -47,7 +47,8 @@ export class PaymentWebhookHandler {
 
       return { success: true, payment };
     } catch (error) {
-      this.logger.error(`Webhook processing failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Webhook processing failed: ${errorMessage}`);
       throw error;
     }
   }
@@ -76,7 +77,8 @@ export class PaymentWebhookHandler {
 
       return { success: true, payment };
     } catch (error) {
-      this.logger.error(`Momo webhook processing failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Momo webhook processing failed: ${errorMessage}`);
       throw error;
     }
   }
@@ -107,7 +109,8 @@ export class PaymentWebhookHandler {
 
       return { success: true, gift };
     } catch (error) {
-      this.logger.error(`Gift webhook processing failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Gift webhook processing failed: ${errorMessage}`);
       throw error;
     }
   }
@@ -132,7 +135,8 @@ export class PaymentWebhookHandler {
 
       return hash.toUpperCase() === signature.toUpperCase();
     } catch (error) {
-      this.logger.error(`VNPay signature verification failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`VNPay signature verification failed: ${errorMessage}`);
       return false;
     }
   }
@@ -156,7 +160,8 @@ export class PaymentWebhookHandler {
 
       return hash === signature;
     } catch (error) {
-      this.logger.error(`Momo signature verification failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Momo signature verification failed: ${errorMessage}`);
       return false;
     }
   }
@@ -176,7 +181,8 @@ export class PaymentWebhookHandler {
 
       return hash === signature;
     } catch (error) {
-      this.logger.error(`Signature verification failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Signature verification failed: ${errorMessage}`);
       return false;
     }
   }

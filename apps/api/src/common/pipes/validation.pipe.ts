@@ -14,6 +14,10 @@ export class ValidationPipe implements PipeTransform {
       return value;
     }
 
+    if (!metadata.metatype || typeof metadata.metatype !== 'function') {
+      return value;
+    }
+
     const object = plainToClass(metadata.metatype, value);
 
     if (typeof object !== 'object') {

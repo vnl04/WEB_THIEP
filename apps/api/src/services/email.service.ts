@@ -45,7 +45,8 @@ export class EmailService {
       const result = await sgMail.send(msg);
       return { success: true, messageId: result[0].headers['x-message-id'], sent: true };
     } catch (error) {
-      this.logger.error(`Failed to send invitation: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to send invitation: ${errorMessage}`);
       throw error;
     }
   }
@@ -78,7 +79,8 @@ export class EmailService {
       const result = await sgMail.send(msg);
       return { success: true, messageId: result[0].headers['x-message-id'], sent: true };
     } catch (error) {
-      this.logger.error(`Failed to send confirmation: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to send confirmation: ${errorMessage}`);
       throw error;
     }
   }
@@ -112,7 +114,8 @@ export class EmailService {
       const result = await sgMail.send(msg);
       return { success: true, messageId: result[0].headers['x-message-id'], sent: true };
     } catch (error) {
-      this.logger.error(`Failed to send gift notification: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to send gift notification: ${errorMessage}`);
       throw error;
     }
   }
@@ -141,7 +144,8 @@ export class EmailService {
       const result = await sgMail.send(msg);
       return { success: true, messageId: result[0].headers['x-message-id'], sent: true };
     } catch (error) {
-      this.logger.error(`Failed to send wish notification: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to send wish notification: ${errorMessage}`);
       throw error;
     }
   }
@@ -175,7 +179,8 @@ export class EmailService {
       const result = await sgMail.send(msg);
       return { success: true, messageId: result[0].headers['x-message-id'], sent: true };
     } catch (error) {
-      this.logger.error(`Failed to send payment confirmation: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to send payment confirmation: ${errorMessage}`);
       throw error;
     }
   }
@@ -204,7 +209,8 @@ export class EmailService {
       const result = await sgMail.send(msg);
       return { success: true, messageId: result[0].headers['x-message-id'], sent: true };
     } catch (error) {
-      this.logger.error(`Failed to send reset password email: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to send reset password email: ${errorMessage}`);
       throw error;
     }
   }

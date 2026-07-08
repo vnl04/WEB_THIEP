@@ -2,10 +2,10 @@ import { IsString, IsUUID } from 'class-validator';
 
 export class CreateSubscriptionDto {
   @IsUUID()
-  cardId: string;
+  cardId!: string;
 
   @IsUUID()
-  planId: string;
+  planId!: string;
 }
 
 export class CancelSubscriptionDto {

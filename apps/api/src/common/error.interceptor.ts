@@ -6,6 +6,7 @@ import {
   ConflictException,
   InternalServerErrorException,
   Logger,
+  CallHandler,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -14,7 +15,7 @@ import { catchError } from 'rxjs/operators';
 export class ErrorInterceptor implements NestInterceptor {
   private logger = new Logger(ErrorInterceptor.name);
 
-  intercept(context: ExecutionContext, next): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError(error => {
         const request = context.switchToHttp().getRequest();

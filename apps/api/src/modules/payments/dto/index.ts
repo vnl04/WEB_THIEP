@@ -3,10 +3,10 @@ import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
 export class InitializePaymentDto {
   @IsNumber()
   @Min(0)
-  amount: number;
+  amount!: number;
 
   @IsString()
-  provider: string; // vnpay, momo, zalopay, stripe
+  provider!: string; // vnpay, momo, zalopay, stripe
 
   @IsString()
   @IsOptional()
@@ -23,7 +23,7 @@ export class InitializePaymentDto {
 
 export class ConfirmPaymentDto {
   @IsString()
-  transactionId: string;
+  transactionId!: string;
 
   @IsString()
   @IsOptional()

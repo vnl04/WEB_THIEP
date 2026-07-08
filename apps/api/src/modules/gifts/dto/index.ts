@@ -3,14 +3,14 @@ import { IsString, IsNumber, IsOptional, IsUUID, Min } from 'class-validator';
 export class CreateGiftDto {
   @IsNumber()
   @Min(0)
-  amount: number;
+  amount!: number;
 
   @IsString()
   @IsOptional()
   currency?: string;
 
   @IsString()
-  paymentMethod: string; // bank_transfer, momo, zalopay, stripe
+  paymentMethod!: string; // bank_transfer, momo, zalopay, stripe
 
   @IsString()
   @IsOptional()

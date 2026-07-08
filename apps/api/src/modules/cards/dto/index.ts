@@ -2,7 +2,7 @@ import { IsString, IsOptional, IsBoolean, IsObject, IsUUID } from 'class-validat
 
 export class CreateCardDto {
   @IsUUID()
-  templateId: string;
+  templateId!: string;
 
   @IsString()
   @IsOptional()

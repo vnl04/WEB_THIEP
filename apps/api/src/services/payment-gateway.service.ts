@@ -44,11 +44,14 @@ export class PaymentGatewayService {
       };
 
       const signature = this.generateVnPaySignature(vnpParams);
-      vnpParams['vnp_SecureHash'] = signature;
+      const vnpParamsWithSignature = {
+        ...vnpParams,
+        vnp_SecureHash: signature,
+      };
 
-      const queryString = Object.keys(vnpParams)
+      const queryString = Object.keys(vnpParamsWithSignature)
         .sort()
-        .map(key => `${key}=${encodeURIComponent(vnpParams[key])}`)
+        .map(key => `${key}=${encodeURIComponent(vnpParamsWithSignature[key as keyof typeof vnpParamsWithSignature])}`)
         .join('&');
 
       const paymentUrl = `https://sandbox.vnpayment.vn/paygate?${queryString}`;
@@ -61,7 +64,8 @@ export class PaymentGatewayService {
         amount,
       };
     } catch (error) {
-      this.logger.error(`Failed to create VNPay payment: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to create VNPay payment: ${errorMessage}`);
       throw error;
     }
   }
@@ -83,7 +87,7 @@ export class PaymentGatewayService {
 
       const partnerCode = process.env.MOMO_PARTNER_CODE || 'MOMO';
       const accessKey = process.env.MOMO_ACCESS_KEY;
-      const secretKey = process.env.MOMO_SECRET_KEY;
+      const secretKey = process.env.MOMO_SECRET_KEY || '';
       const requestId = `${Date.now()}`;
       const requestType = 'captureWallet';
       const notifyUrl = `${process.env.APP_URL}/api/v1/payments/momo-webhook`;
@@ -131,7 +135,8 @@ export class PaymentGatewayService {
         throw new BadRequestException(`Momo error: ${response.data.message}`);
       }
     } catch (error) {
-      this.logger.error(`Failed to create Momo payment: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to create Momo payment: ${errorMessage}`);
       throw error;
     }
   }
@@ -168,7 +173,8 @@ export class PaymentGatewayService {
 
       return { isValid: true, data: { status: 'failed' } };
     } catch (error) {
-      this.logger.error(`VNPay verification failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`VNPay verification failed: ${errorMessage}`);
       return { isValid: false };
     }
   }
@@ -178,7 +184,7 @@ export class PaymentGatewayService {
    */
   verifyMomoResponse(data: any, signature: string): { isValid: boolean; data?: any } {
     try {
-      const secretKey = process.env.MOMO_SECRET_KEY;
+      const secretKey = process.env.MOMO_SECRET_KEY || '';
 
       const signatureString = `accessKey=${data.accessKey}&amount=${data.amount}&extraData=${data.extraData}&ipnUrl=${data.ipnUrl}&orderId=${data.orderId}&orderInfo=${data.orderInfo}&partnerCode=${data.partnerCode}&partnerName=${data.partnerName}&redisplayAssets=${data.redisplayAssets}&redirectUrl=${data.redirectUrl}&requestId=${data.requestId}&requestType=${data.requestType}`;
 
@@ -205,7 +211,8 @@ export class PaymentGatewayService {
 
       return { isValid: true, data: { status: 'failed' } };
     } catch (error) {
-      this.logger.error(`Momo verification failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Momo verification failed: ${errorMessage}`);
       return { isValid: false };
     }
   }

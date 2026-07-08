@@ -2,7 +2,7 @@ import { IsString, IsOptional, IsEmail, IsInt, Min } from 'class-validator';
 
 export class CreateGuestDto {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsEmail()
   @IsOptional()
@@ -15,9 +15,9 @@ export class CreateGuestDto {
 
 export class SubmitRsvpDto {
   @IsString()
-  status: string; // attending, not-attending, pending
+  status!: string; // attending, not-attending, pending
 
   @IsInt()
   @Min(1)
-  count: number;
+  count!: number;
 }

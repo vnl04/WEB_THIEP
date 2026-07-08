@@ -2,7 +2,7 @@ import { IsString, IsOptional, IsUUID } from 'class-validator';
 
 export class CreateWishDto {
   @IsString()
-  content: string;
+  content!: string;
 
   @IsUUID()
   @IsOptional()
@@ -11,7 +11,7 @@ export class CreateWishDto {
 
 export class ReportWishDto {
   @IsString()
-  reason: string; // spam, offensive, inappropriate
+  reason!: string; // spam, offensive, inappropriate
 
   @IsString()
   @IsOptional()

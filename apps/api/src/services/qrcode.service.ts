@@ -31,7 +31,8 @@ export class QrCodeService {
         data: qrData,
       };
     } catch (error) {
-      this.logger.error(`Failed to generate QR code: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to generate QR code: ${errorMessage}`);
       throw error;
     }
   }
@@ -56,7 +57,8 @@ export class QrCodeService {
         inviteUrl,
       };
     } catch (error) {
-      this.logger.error(`Failed to generate invite QR code: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to generate invite QR code: ${errorMessage}`);
       throw error;
     }
   }
@@ -81,7 +83,8 @@ export class QrCodeService {
         rsvpUrl,
       };
     } catch (error) {
-      this.logger.error(`Failed to generate RSVP QR code: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to generate RSVP QR code: ${errorMessage}`);
       throw error;
     }
   }
@@ -118,7 +121,8 @@ export class QrCodeService {
         data: vietQRData,
       };
     } catch (error) {
-      this.logger.error(`Failed to generate bank transfer QR code: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to generate bank transfer QR code: ${errorMessage}`);
       throw error;
     }
   }

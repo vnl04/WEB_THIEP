@@ -13,7 +13,7 @@ import {
 
 export class RegisterDto {
   @IsEmail({}, { message: 'Invalid email format' })
-  email: string;
+  email!: string;
 
   @IsStrongPassword(
     {
@@ -25,44 +25,44 @@ export class RegisterDto {
     },
     { message: 'Password must be at least 8 characters with uppercase, lowercase, number, and symbol' }
   )
-  password: string;
+  password!: string;
 
   @MinLength(2, { message: 'Name must be at least 2 characters' })
   @MaxLength(100, { message: 'Name must not exceed 100 characters' })
   @IsNotEmpty()
-  name: string;
+  name!: string;
 }
 
 export class LoginDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
-  password: string;
+  password!: string;
 }
 
 export class CreateCardDto {
   @IsNotEmpty()
-  templateId: string;
+  templateId!: string;
 
   @MinLength(3)
   @MaxLength(100)
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @MaxLength(500)
   @IsOptional()
   description?: string;
 
   @IsNotEmpty()
-  brideNames: string;
+  brideNames!: string;
 
   @IsNotEmpty()
-  groomNames: string;
+  groomNames!: string;
 
   @IsDate()
   @IsNotEmpty()
-  weddingDate: Date;
+  weddingDate!: Date;
 
   @IsOptional()
   @MaxLength(200)
@@ -71,16 +71,16 @@ export class CreateCardDto {
 
 export class CreateGuestDto {
   @IsNotEmpty()
-  cardId: string;
+  cardId!: string;
 
   @MinLength(2)
   @MaxLength(100)
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsPhoneNumber('VN')
@@ -92,12 +92,12 @@ export class CreateGuestDto {
 
 export class CreateWishDto {
   @IsNotEmpty()
-  cardId: string;
+  cardId!: string;
 
   @MinLength(2)
   @MaxLength(100)
   @IsNotEmpty()
-  guestName: string;
+  guestName!: string;
 
   @IsEmail()
   @IsOptional()
@@ -106,18 +106,18 @@ export class CreateWishDto {
   @MinLength(10)
   @MaxLength(1000)
   @IsNotEmpty()
-  content: string;
+  content!: string;
 }
 
 export class CreatePaymentDto {
   @IsNotEmpty()
-  amount: number;
+  amount!: number;
 
   @IsEnum(['VND', 'USD', 'EUR'])
-  currency: string;
+  currency!: string;
 
   @IsEnum(['vnpay', 'momo', 'bank_transfer', 'stripe'])
-  paymentMethod: string;
+  paymentMethod!: string;
 
   @IsOptional()
   cardId?: string;
@@ -128,7 +128,7 @@ export class CreatePaymentDto {
 
 export class SubmitRsvpDto {
   @IsEnum(['attending', 'not_attending', 'no_response'])
-  status: string;
+  status!: string;
 
   @IsOptional()
   guestCount?: number;
@@ -169,13 +169,13 @@ export class UpdateProfileDto {
 
 export class CreateGiftDto {
   @IsNotEmpty()
-  cardId: string;
+  cardId!: string;
 
   @IsNotEmpty()
-  amount: number;
+  amount!: number;
 
   @IsEnum(['VND', 'USD', 'EUR'])
-  currency: string;
+  currency!: string;
 
   @IsOptional()
   @MinLength(2)
@@ -191,7 +191,7 @@ export class CreateGiftDto {
   message?: string;
 
   @IsNotEmpty()
-  paymentMethod: string;
+  paymentMethod!: string;
 }
 
 export class UpdateCardDto {
@@ -215,17 +215,35 @@ export class UpdateCardDto {
   status?: string;
 }
 
-export class BulkImportGuestsDto {
+export class UpdateBankAccountDto {
   @IsNotEmpty()
-  cardId: string;
+  @MaxLength(50)
+  accountNumber!: string;
 
   @IsNotEmpty()
-  file: any;
+  @MaxLength(100)
+  accountHolder!: string;
+
+  @IsNotEmpty()
+  @MaxLength(10)
+  bankCode!: string;
+
+  @IsOptional()
+  @MaxLength(50)
+  accountType?: string;
+}
+
+export class BulkImportGuestsDto {
+  @IsNotEmpty()
+  cardId!: string;
+
+  @IsNotEmpty()
+  file!: any;
 }
 
 export class CreateSubscriptionDto {
   @IsNotEmpty()
-  planId: string;
+  planId!: string;
 
   @IsOptional()
   paymentMethodId?: string;
@@ -234,7 +252,7 @@ export class CreateSubscriptionDto {
 export class ModerateWishDto {
   @IsEnum(['approved', 'rejected', 'hidden'])
   @IsNotEmpty()
-  status: string;
+  status!: string;
 
   @IsOptional()
   @MaxLength(500)
@@ -244,12 +262,12 @@ export class ModerateWishDto {
 export class ForgotPasswordDto {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 }
 
 export class ResetPasswordDto {
   @IsNotEmpty()
-  token: string;
+  token!: string;
 
   @IsStrongPassword(
     {
@@ -261,14 +279,14 @@ export class ResetPasswordDto {
     },
     { message: 'Password must be at least 8 characters with uppercase, lowercase, number, and symbol' }
   )
-  newPassword: string;
+  newPassword!: string;
 }
 
 export class CreateTemplateDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)
-  name: string;
+  name!: string;
 
   @IsOptional()
   @MaxLength(500)
@@ -283,5 +301,5 @@ export class CreateTemplateDto {
   category?: string;
 
   @IsNotEmpty()
-  blocks: any[];
+  blocks!: any[];
 }

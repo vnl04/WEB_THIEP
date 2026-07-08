@@ -2,10 +2,10 @@ import { IsString, IsOptional, IsInt, Min } from 'class-validator';
 
 export class CreateMediaDto {
   @IsString()
-  type: string; // image, video, music
+  type!: string; // image, video, music
 
   @IsString()
-  url: string;
+  url!: string;
 
   @IsString()
   @IsOptional()

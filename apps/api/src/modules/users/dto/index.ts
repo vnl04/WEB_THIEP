@@ -20,13 +20,13 @@ export class UpdateProfileDto {
 
 export class UpdateBankAccountDto {
   @IsString()
-  accountNumber: string;
+  accountNumber!: string;
 
   @IsString()
-  accountHolder: string;
+  accountHolder!: string;
 
   @IsString()
-  bankCode: string;
+  bankCode!: string;
 
   @IsString()
   @IsOptional()
